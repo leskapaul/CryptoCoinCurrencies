@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Crypto Coin Trends</title>
+    <link rel="stylesheet" href="../static/bootstrap.css" th:href="@{/bootstrap.css}" />
+    <link rel="stylesheet" href="../static/bootstrap-grid.css" th:href="@{/bootstrap-grid.css}" />
+    <link rel="stylesheet" href="../static/bootstrap-reboot.css" th:href="@{/bootstrap-reboot.css}" />
+
+    <script rel="text/javascript" src="/static/react/react.js" th:src="@{/react/react.js}"></script>
+    <script rel="text/javascript" src="/static/react/react-dom.js" th:src="@{/react/react-dom.js}"></script>
+
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <!--<script src="socket.io/socket.io.js"></script>-->websocketendpoint
+
+
+</head>
+<body>
+<form>
+    <input id="message" type="text">
+    <input onclick="wsSendMessage();" value="Echo" type="button">
+    <input onclick="wsCloseConnection();" value="Disconnect" type="button">
+</form>
+<br>
+<textarea id="echoText" rows="5" cols="30"></textarea>
+<script type="text/javascript">
+    var webSocket = new WebSocket("ws://localhost:8080/cryptocoinmarket/websocketendpoint");
+    var echoText = document.getElementById("echoText");
+    echoText.value = "";
+    var message = document.getElementById("message");
+    webSocket.onopen = function(message){ wsOpen(message);};
+    webSocket.onmessage = function(message){ wsGetMessage(message);};
+    webSocket.onclose = function(message){ wsClose(message);};
+    webSocket.onerror = function(message){ wsError(message);};
+    function wsOpen(message){
+        echoText.value += "Connected ... \n";
+    }
+    function wsSendMessage(){
+        webSocket.send(message.value);
+        echoText.value += "Message sent to the server : " + message.value + "\n";
+        message.value = "";
+    }
+    function wsCloseConnection(){
+        webSocket.close();
+    }
+    function wsGetMessage(message){
+        echoText.value += "Message received from to the server : " + message.data + "\n";
+    }
+    function wsClose(message){
+        echoText.value += "Disconnect ... \n";
+    }
+
+    function wsError(message){
+        echoText.value += "Error ... \n";
+    }
+</script>
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Crypto Coin Trends</a>
+            </div>
+            <p class="navbar-text navbar-right" th:text="'Signed in as ' + ${username}" style="margin-right: 10px;">Signed in as Anonymus</p>
+        </div>
+    </nav>
+</header>
+
+<div>
+    Hello, Thymeleaf!
+</div>
+
+<div id="root"></div>
+<script type="text/babel">
+
+    class Test extends React.Component {
+        constructor(props){
+            super(props);
+
+            this.state = {
+                isLoading: true,
+                data: [],
+                coinMarketCap: '',
+                bitCoin: '',
+                bitCoinPrice: '',
+                xrpCoinPrice: '',
+                ethereumCoinPrice: '',
+                bitCoinCashCoinPrice: '',
+                eosCoinPrice: '',
+                stellarCoinPrice: '',
+                litecoinPrice: '',
+                bitCoinSVCoinPrice: '',
+                tetherCoinPrice: '',
+                tronCoinPrice: '',
+                myComponent: ''
+            };
+        }
+
+
+        componentDidMount(){
+
+            fetch('https://coinmarketcap.com/')
+                .then((resp)=>{ return resp.text() })
+                .then((text) => {
+                    //console.log(text);
+
+
+                    let cryotoCoinPrices = [];
+                    cryotoCoinPrices = this.getCryptoCoinPrice(text); // method call
+                    console.log("666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666");
+                    for (let [key, value] of Object.entries(cryotoCoinPrices)) {
+                        console.log(key, value);
+                    }
+
+
+                    this.setState({coinMarketCap: text });
+                    let div = document.createElement("div");
+
+                    // Bitcoin
+                    div.innerHTML = $(text).find('#id-bitcoin').html();
+                    let bitCoinPriceClass = div.querySelector(".price");
+                    this.setState({bitCoinPrice: bitCoinPriceClass.innerText});
+
+                    // XRP
+                    div.innerHTML = $(text).find('#id-ripple').html();
+                    let xrpCoinPriceClass = div.querySelector(".price");
+                    this.setState({xrpCoinPrice: xrpCoinPriceClass.innerText});
+
+                    // Ethereum
+                    div.innerHTML = $(text).find('#id-ethereum').html();
+                    let ethereumCoinPriceClass = div.querySelector(".price");
+                    this.setState({ethereumCoinPrice: ethereumCoinPriceClass.innerText});
+
+                    // Bitcoin Cash
+                    div.innerHTML = $(text).find('#id-bitcoin-cash').html();
+                    let bitCoinCashCoinPriceClass = div.querySelector(".price");
+                    this.setState({bitCoinCashCoinPrice: bitCoinCashCoinPriceClass.innerText});
+
+                    // EOS
+                    div.innerHTML = $(text).find('#id-eos').html();
+                    let eosCoinPriceClass = div.querySelector(".price");
+                    this.setState({eosCoinPrice: eosCoinPriceClass.innerText});
+
+                    // Stellar
+                    div.innerHTML = $(text).find('#id-stellar').html();
+                    let stellarCashCoinPriceClass = div.querySelector(".price");
+                    this.setState({stellarCoinPrice: stellarCashCoinPriceClass.innerText});
+
+                    // Litecoin
+                    div.innerHTML = $(text).find('#id-litecoin').html();
+                    let litecoinCashCoinPriceClass = div.querySelector(".price");
+                    this.setState({litecoinPrice: litecoinCashCoinPriceClass.innerText});
+
+                    // Bitcoin SV
+                    div.innerHTML = $(text).find('#id-bitcoin-sv').html();
+                    let bitCoinSVCoinCashCoinPriceClass = div.querySelector(".price");
+                    this.setState({bitCoinSVCoinPrice: bitCoinSVCoinCashCoinPriceClass.innerText});
+
+                    // Tether
+                    div.innerHTML = $(text).find('#id-tether').html();
+                    let tetherCoinCashCoinPriceClass = div.querySelector(".price");
+                    this.setState({tetherCoinPrice: tetherCoinCashCoinPriceClass.innerText});
+
+                    // tron
+                    div.innerHTML = $(text).find('#id-tron').html();
+                    let tronCoinCashCoinPriceClass = div.querySelector(".price");
+                    this.setState({tronCoinPrice: tronCoinCashCoinPriceClass.innerText});
+
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+
+        getCryptoCoinPrice(html) {
+            // console.log('TESTING');
+            //
+            // let obj = {};
+            // obj['Kyle'] = '30';
+            // obj['Paul'] = '36';
+            // obj['Sean'] = '26';
+
+            // for (let [key, value] of Object.entries(obj)) {
+            //     console.log(key, value);
+            // }
+
+            let children = []  = html.split('class="price"'); // Allows us to split HTML at each crypto coin. We can get the price and other information
+                                                              // per crypto coin and assign each crypto coin to its own index in an array
+            let cryotoCoinPrices = [];
+            // alert(children[0]);
+            // alert(children[1]);
+
+            for (let i = 1; i < children.length; i++) {
+                //alert(children.length);
+                let startIndex = children[i].indexOf('$');
+                let endprice = children[i].indexOf('a', startIndex);
+                let cryptoCoinValue = children[i].substring(startIndex, (endprice-2) );
+                console.log(children[i],'222222222222222222222222222222222222222');
+
+                // alert(startIndex,'Start Value');
+                // console.log(startIndex,'Start Value');
+                // alert(endprice,'endprice');
+                // console.log(endprice,'endprice');
+
+                // console.log(children[i].substring(startIndex, (endprice-2) ));
+                // alert(children[i].substring(startIndex, (endprice-2) ));
+                // console.log(cryptoCoinValue);
+                //alert(cryptoCoinValue);
+
+                cryotoCoinPrices.push(cryptoCoinValue);
+
+                // let dollarSign = children[i].indexOf('$', startIndex); // start of dollar sign in the string
+                // alert(dollarSign,'dollarSign Value');
+                // console.log(dollarSign,'dollarSign Value');
+                //console.log(dollarSign);
+                // console.log(children[i].charAt(dollarSign));
+                // let end = children[i].indexOf('a',startIndex);
+                // console.log(end,'End Value');
+                // alert((children[i].slice(startIndex, end))); // check the values of 'start' and 'end'
+                console.log('***********************************************************************************************************************************************************************************');
+
+
+            }
+            return cryotoCoinPrices;
+        }
+
+        updateState(e) {
+            this.setState({bitCoin: e.target.value});
+        }
+
+        getCurrentTime() {
+            // Get the current 'global' time from an API using Promise
+            return new Promise((resolve, reject) => {
+                console.log('Inside return new promis');
+                // console.log(resolve.valueOf());
+                // console.log(reject.valueOf());
+                setTimeout(function () {
+                    console.log('Inside setTimeout');
+                    var didSucceed = Math.random() >= 0.5;
+                    console.log('didSucceed Value: ', didSucceed);
+                    didSucceed ? resolve(new Date()) : reject('Error!');
+
+                }, 2000);
+            });
+        }
+
+
+        render(){
+            return (
+                <div>
+                    <button onClick = {this.getCurrentTime}>Click</button>
+                    <div>
+                        <Bitcoin bitCoinPriceProp = {this.state.bitCoinPrice}/>
+                    </div>
+                    <div>
+                        <XRPcoin xrpCoinPriceProp = {this.state.xrpCoinPrice}/>
+                    </div>
+                    <div>
+                        <Ethereumcoin ethereumCoinPriceProp = {this.state.ethereumCoinPrice}/>
+                    </div>
+                    <div>
+                        <Bitcoincashcoin bitCoinCashCoinPriceProp = {this.state.bitCoinCashCoinPrice}/>
+                    </div>
+                    <div>
+                        <Eoscoin eosCoinPriceProp = {this.state.eosCoinPrice}/>
+                    </div>
+                    <div>
+                        <Stellarcoin stellarCoinPriceProp = {this.state.stellarCoinPrice}/>
+                    </div>
+                    <div>
+                        <Litecoin litecoinPriceProp = {this.state.litecoinPrice}/>
+                    </div>
+                    <div>
+                        <BitCoinSV bitCoinSVCoinPriceProp = {this.state.bitCoinSVCoinPrice}/>
+                    </div>
+                    <div>
+                        <Tethercoin tetherCoinPriceProp = {this.state.tetherCoinPrice}/>
+                    </div>
+                    <div>
+                        <Troncoin tronCoinPriceProp = {this.state.tronCoinPrice}/>
+                    </div>
+                </div>
+            )
+        }
+    }
+
+
+
+    class Bitcoin extends React.Component {
+        render() {
+            return (
+                <div>
+                    <h1>{this.props.bitCoinPriceProp}</h1>
+                </div>
+            );
+        }
+    }
+
+    class XRPcoin extends React.Component {
+        render() {
+            return (
+                <div>
+                    <h1>{this.props.xrpCoinPriceProp}</h1>
+                </div>
+            );
+        }
+    }
+
+    class Ethereumcoin extends React.Component {
+        render() {
+            return (
+                <div>
+                    <h1>{this.props.ethereumCoinPriceProp}</h1>
+                </div>
+            );
+        }
+    }
+
+    class Bitcoincashcoin extends React.Component {
+        render() {
+            return (
+                <div>
+                    <h1>{this.props.bitCoinCashCoinPriceProp}</h1>
+                </div>
+            );
+        }
+    }
+
+    class Eoscoin extends React.Component {
+        render() {
+            return (
+                <div>
+                    <h1>{this.props.eosCoinPriceProp}</h1>
+                </div>
+            );
+        }
+    }
+
+    class Stellarcoin extends React.Component {
+        render() {
+            return (
+                <div>
+                    <h1>{this.props.stellarCoinPriceProp}</h1>
+                </div>
+            )
+        }
+    }
+
+    class Litecoin extends React.Component {
+        render() {
+            return (
+                <div>
+                    <h1>{this.props.litecoinPriceProp}</h1>
+                </div>
+            );
+        }
+    }
+
+    class BitCoinSV extends React.Component {
+        render() {
+            return (
+                <div>
+                    <h1>{this.props.bitCoinSVCoinPriceProp}</h1>
+                </div>
+            );
+        }
+    }
+
+    class Tethercoin extends React.Component {
+        render() {
+            return (
+                <div>
+                    <h1>{this.props.tetherCoinPriceProp}</h1>
+                </div>
+            );
+        }
+    }
+
+    class Troncoin extends React.Component {
+        render() {
+            return (
+                <div>
+                    <h1>{this.props.tronCoinPriceProp}</h1>
+                </div>
+            );
+        }
+    }
+
+    ReactDOM.render(
+        <Test/>,
+        document.getElementById('root')
+    );
+</script>
+
+    <footer class="footer" style="position: absolute; bottom:0; background-color: #f5f5f5;">
+    <div class="container">
+        <p class="text-muted" th:text="${#dates.format(datetime,'dd MMM yyyy HH:mm')}">Page was rendered today!</p>
+    </div>
+</footer>
+
+</body>
+</html>
