@@ -1,0 +1,15 @@
+{
+  "name": "cryotocoinio",
+  "version": "1.0.0",
+  "description": "Cryoto Coin IO",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kyle Pollack",
+  "license": "ISC",
+  "dependencies": {
+    "socket.io": "*",
+    "express": "*"
+  }
+}
