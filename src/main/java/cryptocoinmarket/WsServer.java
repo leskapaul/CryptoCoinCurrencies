@@ -1,11 +1,14 @@
 package cryptocoinmarket;
 
-import javax.websocket.*;
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
 import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
 import javax.websocket.server.ServerEndpoint;
 
 @ServerEndpoint("/websocketendpoint")
 public class WsServer {
+
 
     @OnOpen
     public void onOpen(){

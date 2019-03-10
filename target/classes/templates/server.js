@@ -19,12 +19,13 @@ io.sockets.on('connection', function(socket){   //open a connection, put events 
 
     // Disconnect
     socket.on('disconnect', function (data) {  // When someone closes a webpage, this code will be executed
-    // // username form
-    // users.splice(users.indexOf(socket.username),1);  // The splice() method adds/removes items to/from an array, and returns the removed item(s).Note: This method changes the original array.
-    // updateUsernames();
+        // // username form
+        // users.splice(users.indexOf(socket.username),1);  // The splice() method adds/removes items to/from an array, and returns the removed item(s).Note: This method changes the original array.
+        // updateUsernames();
+
         connections.splice(connections.indexOf(socket), 1);
         console.log('Disconnected: %s sockets connected', connections.length); // how many are still connected
-    }); // end sockets on
+    });
 
     // Send message
     socket.on('send message', function (data) {
