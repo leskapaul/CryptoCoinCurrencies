@@ -10,7 +10,7 @@ import java.io.IOException;
 public class WebSocketHandler extends AbstractWebSocketHandler {
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
-        System.out.println("New Text Message Received");
+        System.out.println("New Text Message Received: " + message.toString());
         session.sendMessage(message);
     }
 
